@@ -5,9 +5,28 @@ import (
    "io/ioutil"
    "os"
    "path/filepath"
+   "bufio"
+   "strings"
 )
 
-func dirwalk(dir string) []string {
+// マイン関数
+func main() {
+   var files = getFileList("./resouces")
+   
+   fmt.Print("検索キーワードを入力してください：")
+   var key = StrStdin()
+   //fmt.Println("    検索キーワード："+ key)
+
+    for _,v := range files {
+       //fmt.Println(i,v)
+       readFile(key , v)
+       
+    }
+}
+
+
+// ファイルリスト取得関数
+func getFileList(dir string) []string {
    files, err := ioutil.ReadDir(dir)
    if err != nil {
        panic(err)
@@ -15,7 +34,7 @@ func dirwalk(dir string) []string {
    var paths []string
    for _, file := range files {
        if file.IsDir() {
-           paths =  dirwalk(filepath.Join(dir, file.Name()))
+           paths =  getFileList(filepath.Join(dir, file.Name()))
            continue
        }
        paths = append(paths, filepath.Join(dir, file.Name()))
@@ -23,17 +42,9 @@ func dirwalk(dir string) []string {
    return paths
 }
 
-func main() {
-   var files = dirwalk("./resouces")
-
-    for i,v := range files {
-       fmt.Println(i,v)
-       readFile(v)
-    }
-}
-
-func readFile(path string) {
-    fmt.Println("ファイル読み取り処理を開始します")
+//ファイルを読み込み関数
+func readFile(key string, path string) {
+    //fmt.Println("ファイル読み取り処理を開始します")
     // ファイルをOpenする
     f, err := os.Open(path)
     if err != nil{
@@ -44,6 +55,19 @@ func readFile(path string) {
     // 一気に全部読み取り
     b, err := ioutil.ReadAll(f)
     // 出力
-    fmt.Println(string(b))
+    fmt.Print("検索対象ファイル:" + path)
+    fmt.Print("    検索結果件数：")
+    fmt.Println(strings.Count(string(b),key))
 
+}
+
+// 検索キーワード入力関数
+func StrStdin() (stringInput string) {
+    scanner := bufio.NewScanner(os.Stdin)
+
+    scanner.Scan()
+    stringInput = scanner.Text()
+
+    stringInput = strings.TrimSpace(stringInput)
+    return
 }
