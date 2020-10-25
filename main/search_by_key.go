@@ -15,13 +15,11 @@ func main() {
    
    fmt.Print("検索キーワードを入力してください：")
    var key = StrStdin()
-   //fmt.Println("    検索キーワード："+ key)
 
-    for _,v := range files {
-       //fmt.Println(i,v)
-       readFile(key , v)
-       
-    }
+   for _,v := range files {
+      //fmt.Println(i,v)
+      readFile(key , v)     
+   }
 }
 
 
@@ -44,7 +42,7 @@ func getFileList(dir string) []string {
 
 //ファイルを読み込み関数
 func readFile(key string, path string) {
-    //fmt.Println("ファイル読み取り処理を開始します")
+
     // ファイルをOpenする
     f, err := os.Open(path)
     if err != nil{
